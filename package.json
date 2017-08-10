@@ -1,0 +1,9 @@
+{
+  "name": "amne",
+  "version": "1.0.0",
+  "description": "Coding challenege for Amne.",
+  "main": "index.js",
+  "repository": "git@github.com:gromkii/amne.git",
+  "author": "Dax <limeside@gmail.com>",
+  "license": "MIT"
+}
