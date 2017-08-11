@@ -25,17 +25,21 @@
    */
   var {
     days,
-    subranges,
+    numberofSubranges,
     priceRange
   } = parsed;
 
   console.log(days);
-  console.log(subranges);
+  console.log(numberofSubranges);
   console.log(priceRange);
 
-  var results = createSubranges(days, subranges, priceRange);
+  var subranges = createSubranges(days, numberofSubranges, priceRange);
 
-  console.log(results);
+  console.log(subranges);
+
+  var subrangeCountResults = getCount(subranges);
+
+  console.log(subrangeCountResults);
 
   /**
    * parseData from inputData
@@ -46,12 +50,12 @@
     var formatData = data.split('\n');
     var args       = formatData[0].split(' ');
     var days       = parseInt(args[0]);
-    var subranges  = parseInt(args[1]);
+    var numberofSubranges  = parseInt(args[1]);
     var priceRange = formatData[1].split(' ');
 
     return {
       days,
-      subranges,
+      numberofSubranges,
       priceRange
     }
   }
@@ -59,47 +63,49 @@
   /**
    * Logic for solving subrange.
    * @param  {int} days
-   * @param  {int} subranges
+   * @param  {int} numberofSubranges
    * @param  {Array} priceRange
    * @return {Array}            Returns desired output.
    */
-  function createSubranges(days, subranges, priceRange) {
-    // Calculate the number of subranges.
-    var subrangeWindowSize = days - subranges + 1;
+  function createSubranges(days, numberofSubranges, priceRange) {
+    // Calculate the number of numberofSubranges.
+    var subrangeWindowSize = days - numberofSubranges + 1;
     var results = [];
-    var countResults = [];
-    // Divide priceRange in to the number of subranges. N - K + 1
+    // Divide priceRange in to the number of numberofSubranges. N - K + 1
     for (var i = 0; i < subrangeWindowSize; i++) {
       var temp = priceRange.slice();
       results.push(temp.slice(i, subrangeWindowSize + i));
     }
 
-    for (var i = 0; i < results.length; i++) {
-      var count = 0;
-
-      for (var j = 0; j < results[i].length; j++) {
-        if (results[i][j] < results[i][j+1]) {
-          count++
-
-          // This check needs to happen for the number of items left in the array.
-          if (results[i][j+1] < results[i][j+2]) {
-            count++
-          }
-        } else if (results[i][j] > results[i][j+1]) {
-          count--
-          // This check needs to happen for the number of items left in the array.
-          if (results[i][j+1] > results[i][j+2]) {
-            count--
-          }
-        }
-      }
-      countResults.push(count);
-    }
-
-    return countResults;
+    return results;
   }
 
+  /**
+   * Compares between values in numberofSubranges.
+   * @param  {int} a
+   * @param  {int} b
+   * @return {int}   Returns count for increase/decreasing subrange.
+   */
+  function compareValues(a, b) {
+    if (a < b) {
+      return 1;
+    } else if (a > b) {
+      return -1;
+    }
+    return 0;
+  }
 
+  function getCount(subranges){
+    var resultsArray = [];
+    for (var i = 0; i < subranges.length; i++) {
+      var count = 0;
+      for (var j = 0; j < subranges[i].length; j++) {
+        count += compareValues(subranges[i][j], subranges[i][j+1]);
+      }
+      resultsArray.push(count);
+    }
 
+    return resultsArray;
+  }
 
 }());
