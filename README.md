@@ -12,3 +12,15 @@
   npm intall -g mocha
   npm test
 ```
+
+## Usage
+```javascript
+  var Counter = require('pathToCounter');
+  var input = 'pathToInput.txt';
+  var newCounter = new Counter(input);
+
+  var results = newCounter.results;
+```
+
+### Versions
+• Node v7.10

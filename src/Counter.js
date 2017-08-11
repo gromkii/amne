@@ -8,6 +8,19 @@
     this.inputData = fs.readFileSync(input, 'utf8').toString();
     this.valid = this.checkInputPath(this.input, this.inputData);
     this.errorMessage = null;
+
+    // Abstract from parseData.
+    var {
+      days,
+      numberofSubranges,
+      priceRange
+    } = this.parseData();
+
+    this.days = days;
+    this.numberofSubranges = numberofSubranges;
+    this.priceRange = priceRange;
+    this.subranges = this.createSubranges();
+    this.results = this.getCount();
   }
 
   /**
@@ -64,13 +77,13 @@
    * @param  {Array<int>} priceRange
    * @return {Array[Array<int>]}            Returns desired output.
    */
-  Counter.prototype.createSubranges = function(days, numberofSubranges, priceRange) {
+  Counter.prototype.createSubranges = function() {
     // Calculate the number of numberofSubranges.
-    var subrangeWindowSize = days - numberofSubranges + 1;
+    var subrangeWindowSize = this.days - this.numberofSubranges + 1;
     var results = [];
 
-    for (var i = 0; i < numberofSubranges; i++) {
-      var temp = priceRange.slice();
+    for (var i = 0; i < this.numberofSubranges; i++) {
+      var temp = this.priceRange.slice();
       results.push(temp.slice(i, subrangeWindowSize + i));
     }
 
@@ -83,16 +96,16 @@
    * @return {Array<int>}           Array of increment count results.
    */
 
-  Counter.prototype.getCount = function(sub){
+  Counter.prototype.getCount = function(){
     var resultsArray = [];
 
-    for (var i = 0; i < sub.length; i++) {
+    for (var i = 0; i < this.subranges.length; i++) {
       var count = 0;
       var sequence = 0;
 
       // Check for sequence of increasing/decreasing values.
-      for (var j = 0; j < sub[i].length; j++) {
-        if (sub[i][j] < sub[i][j+1]) {
+      for (var j = 0; j < this.subranges[i].length; j++) {
+        if (this.subranges[i][j] < this.subranges[i][j+1]) {
           if (sequence > 0) {
             count += sequence;
             sequence++;
@@ -100,7 +113,7 @@
             sequence = 1;
           }
           count++
-        } else if (sub[i][j] > sub[i][j+1]) {
+        } else if (this.subranges[i][j] > this.subranges[i][j+1]) {
           if (sequence < 0) {
             count += sequence;
             sequence--;
