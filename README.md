@@ -5,3 +5,8 @@
   git clone [repo]
   node src/index.js <input file>
 ```
+
+## Testing
+```
+  npm test
+```
