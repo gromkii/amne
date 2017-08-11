@@ -29,15 +29,18 @@
     priceRange
   } = parsed;
 
-  console.log(days);
-  console.log(numberofSubranges);
-  console.log(priceRange);
-
+  /**
+   * 2d array of subranges based on numberofSubranges
+   * @type {Array[Array<int>]}
+   */
   var subranges = createSubranges(days, numberofSubranges, priceRange);
-
   console.log(subranges);
 
-  var subrangeCountResults = getCount(subranges);
+  /**
+   * Array of results based on subrange increments.
+   * @type {Array<int>}
+   */
+  var subrangeCountResults = getCount(numberofSubranges, subranges);
 
   console.log(subrangeCountResults);
 
@@ -81,45 +84,45 @@
   }
 
   /**
-   * Compares between values in numberofSubranges.
-   * @param  {int} a
-   * @param  {int} b
-   * @return {int}   Returns count for increase/decreasing subrange.
-   */
-  function compareValues(a, b) {
-    if (a < b) {
-      return 1;
-    } else if (a > b) {
-      return -1;
-    }
-    return 0;
-  }
-
-  /**
    * Get the count with way too many loops. 😩
    * @param  {Array[Array<int>]} subranges
    * @return {Array<int>}           Array of increment count results.
    */
 
-  function getCount(subranges){
+  function getCount(num, sub){
     var resultsArray = [];
-    for (var i = 0; i < subranges.length; i++) {
-      var count = 0;
-      for (var j = 0; j < subranges[i].length; j++) {
-        count += compareValues(subranges[i][j], subranges[i][j+1]);
 
-        for (var k = j+2; k < subranges[i].length - j; k++) {
-          if (subranges[i][j] < subranges[i][j+1] && subranges[i][j+1] < subranges[i][k]) {
-            count++
-          } else if (subranges[i][j] > subranges[i][j+1] && subranges[i][j+1] > subranges[i][k]) {
-            count--
+    for (var i = 0; i < sub.length; i++) {
+      var count = 0;
+      var sequence = 0;
+
+      // Check for sequence of increasing/decreasing values.
+      for (var j = 0; j < sub[i].length; j++) {
+        if (sub[i][j] < sub[i][j+1]) {
+          if (sequence > 0) {
+            count += sequence;
+            sequence++;
+          } else {
+            sequence = 1;
           }
+          count++
+        } else if (sub[i][j] > sub[i][j+1]) {
+          if (sequence < 0) {
+            count += sequence;
+            sequence--;
+          } else {
+            sequence = -1
+          }
+          count--;
         }
+
       }
+
       resultsArray.push(count);
     }
 
     return resultsArray;
   }
+
 
 }());
