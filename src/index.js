@@ -64,15 +64,15 @@
    * Logic for solving subrange.
    * @param  {int} days
    * @param  {int} numberofSubranges
-   * @param  {Array} priceRange
-   * @return {Array}            Returns desired output.
+   * @param  {Array<int>} priceRange
+   * @return {Array[Array<int>]}            Returns desired output.
    */
   function createSubranges(days, numberofSubranges, priceRange) {
     // Calculate the number of numberofSubranges.
     var subrangeWindowSize = days - numberofSubranges + 1;
     var results = [];
-    // Divide priceRange in to the number of numberofSubranges. N - K + 1
-    for (var i = 0; i < subrangeWindowSize; i++) {
+
+    for (var i = 0; i < numberofSubranges; i++) {
       var temp = priceRange.slice();
       results.push(temp.slice(i, subrangeWindowSize + i));
     }
@@ -94,6 +94,12 @@
     }
     return 0;
   }
+
+  /**
+   * Get the count with way too many loops. 😩
+   * @param  {Array[Array<int>]} subranges
+   * @return {Array<int>}           Array of increment count results.
+   */
 
   function getCount(subranges){
     var resultsArray = [];
