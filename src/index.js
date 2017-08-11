@@ -101,6 +101,14 @@
       var count = 0;
       for (var j = 0; j < subranges[i].length; j++) {
         count += compareValues(subranges[i][j], subranges[i][j+1]);
+
+        for (var k = j+2; k < subranges[i].length - j; k++) {
+          if (subranges[i][j] < subranges[i][j+1] && subranges[i][j+1] < subranges[i][k]) {
+            count++
+          } else if (subranges[i][j] > subranges[i][j+1] && subranges[i][j+1] > subranges[i][k]) {
+            count--
+          }
+        }
       }
       resultsArray.push(count);
     }
