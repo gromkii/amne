@@ -13,36 +13,68 @@
    */
   var inputData = fs.readFileSync(input, 'utf8').toString();
 
-  /**
-   * Get objet of parsed data.
-   * @type {Object}
-   */
-  var parsed = parseData(inputData);
+  var valid = checkInputPath(input, inputData);
+
+
+  if (valid) {
+    /**
+     * Get objet of parsed data.
+     * @type {Object}
+     */
+    var parsed = parseData(inputData);
+    if (parsed === -1) { valid = false }
+
+    /**
+     * Abstract parsed data into variables.
+     * @type {Int, Int, Array}
+     */
+    var {
+      days,
+      numberofSubranges,
+      priceRange
+    } = parsed;
+
+    /**
+     * 2d array of subranges based on numberofSubranges
+     * @type {Array[Array<int>]}
+     */
+    var subranges = createSubranges(days, numberofSubranges, priceRange);
+
+    /**
+     * Array of results based on subrange increments.
+     * @type {Array<int>}
+     */
+    var subrangeCountResults = getCount(numberofSubranges, subranges);
+
+    // Display final subrangeCountResults in formatted output.
+    // We could write an output file I guess?
+    console.log(subrangeCountResults.join('\n'));
+  }
 
   /**
-   * Abstract parsed data into variables.
-   * @type {Int, Int, Array}
+   * Check input data to ensure data is properly formatted.
+   * @param  {String} input
+   * @param  {String} inputData
+   * @return {bool}           Return true if data is in valid format.
    */
-  var {
-    days,
-    numberofSubranges,
-    priceRange
-  } = parsed;
+  function checkInputPath(input, inputData) {
+    if (!input) {
+      console.log('Error: invalid input file path.');
+      console.log('Please use the syntax: node <index path.js> <input path.txt>');
 
-  /**
-   * 2d array of subranges based on numberofSubranges
-   * @type {Array[Array<int>]}
-   */
-  var subranges = createSubranges(days, numberofSubranges, priceRange);
-  console.log(subranges);
+      return false;
+    }
 
-  /**
-   * Array of results based on subrange increments.
-   * @type {Array<int>}
-   */
-  var subrangeCountResults = getCount(numberofSubranges, subranges);
+    var testData = parseData(inputData);
 
-  console.log(subrangeCountResults);
+    if (!testData.days || !testData.numberofSubranges || !testData.priceRange) {
+      console.log('Error: invalid file format, please refer to README');
+      return false;
+    }
+
+    return true;
+
+  }
 
   /**
    * parseData from inputData
@@ -50,16 +82,28 @@
    * @return {Object}      An object containing parsed input data.
    */
   function parseData(data) {
-    var formatData = data.split('\n');
-    var args       = formatData[0].split(' ');
-    var days       = parseInt(args[0]);
+    var formatData         = data.split('\n');
+    var args               = formatData[0].split(' ');
+    var days               = parseInt(args[0]);
     var numberofSubranges  = parseInt(args[1]);
-    var priceRange = formatData[1].split(' ');
+    var priceRange         = formatData[1].split(' ');
+
+
+    // Check for data formatting.;
+    if (formatData.length >= 3 && formatData[2] !== '') {
+      console.error('Error: Too many lines!');
+      return -1;
+    }
+
+    if (args.length > 2 || args.length < 2) {
+      console.error('Error: invalid number of arguments (2)');
+      return -1;
+    }
 
     return {
-      days,
-      numberofSubranges,
-      priceRange
+      days: days ? days : null,
+      numberofSubranges: numberofSubranges ? numberofSubranges : null,
+      priceRange: priceRange ? priceRange : null
     }
   }
 
