@@ -69,6 +69,7 @@
       };
     }
 
+    // Probably a more efficient way to handle this? 🤔
     if (args.length == 2) {
       if (args[0] < args[1]) {
         return {
@@ -85,18 +86,24 @@
           errorMsg:"Number of days provided is too large. < 200k",
           error:true
         }
+      } else if (!days || !numberofSubranges) {
+        return {
+          error:true,
+          errorMsg:"Invalid data type for window/subrange"
+        }
       }
     }
 
+    // Check to see that price data is valid.
     if (priceRange.length) {
       var price = priceRange.every(price => {
-        return price < 1000000
+        return price < 1000000 && !isNaN(price) && price !== '';
       });
 
       if (!price) {
         return {
           error:true,
-          errorMsg: "House Prices should be < 1000000."
+          errorMsg: "Invalid house price data. Must be a value < 1000000."
         }
       }
     }

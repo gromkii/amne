@@ -16,7 +16,7 @@
   var Counter = require('./Counter.js');
   var newCounter = new Counter(input);
 
-  console.log(newCounter.results.join('\n'));
+  newCounter.results.length ? console.log(newCounter.results.join('\n')) : null; 
 
 
 
