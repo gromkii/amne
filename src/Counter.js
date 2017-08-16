@@ -52,7 +52,9 @@
     var days               = parseInt(args[0]);
     var numberofSubranges  = parseInt(args[1]);
     var priceRange         = formatData[1].split(' ');
-
+    var error              = false;
+    var errorMsg           = '';
+    var {error, errorMsg}  = this.checkArguments(args);
 
     // Check for data formatting.;
     if ((formatData.length >= 3 && formatData[2] !== '') || formatData.length < 2) {
@@ -60,39 +62,13 @@
         errorMsg:`Too ${formatData.length < 2 ? 'few' : 'many' } lines provided.`,
         error:true
       };
-    }
-
-    if (args.length > 2 || args.length < 2) {
+    } else if (!days || !numberofSubranges) {
       return {
-        errorMsg: `Too ${args.length > 2 ? 'many' : 'few'} arguments provided.`,
-        error:true
-      };
-    }
-
-    // Probably a more efficient way to handle this? 🤔
-    if (args.length == 2) {
-      if (args[0] < args[1]) {
-        return {
-          errorMsg:"Number of windows cannot exceed number of days. 1 < K < N" ,
-          error:true
-        }
-      } else if (args[1] < 1) {
-        return {
-          errorMsg:"Need at least one window.",
-          error:true
-        }
-      } else if (args[0] > 200000) {
-        return {
-          errorMsg:"Number of days provided is too large. < 200k",
-          error:true
-        }
-      } else if (!days || !numberofSubranges) {
-        return {
-          error:true,
-          errorMsg:"Invalid data type for window/subrange"
-        }
+        error:true,
+        errorMsg:"Invalid data type for window/subrange"
       }
     }
+
 
     // Check to see that price data is valid.
     if (priceRange.length) {
@@ -109,12 +85,45 @@
     }
 
     return {
-      error:false,
-      errorMsg:'',
+      error,
+      errorMsg,
       days,
       numberofSubranges,
       priceRange,
     }
+  }
+
+  /**
+   * Checks arguments for valid data types, throws error if invalid.
+   * @param  {Array} args
+   * @return {Object}   Returns error key value pairs.
+   */
+  Counter.prototype.checkArguments = function(args) {
+    if (args.length !== 2) {
+      return {
+        error:true,
+        errorMsg: `Too ${args.length > 2 ? 'many' : 'few'} arguments provided.`
+      }
+    } else if (args.length == 2) {
+      if (args[0] < args[1]) {
+        return {
+          errorMsg:"Number of windows cannot exceed number of days. 1 < K < N" ,
+          error:true
+        }
+      } else if (args[1] < 1) {
+        return {
+          errorMsg:"Need at least one window.",
+          error:true
+        }
+      } else if (args[0] > 200000) {
+        return {
+          errorMsg:"Number of days provided is too large. < 200k",
+          error:true
+        }
+      }
+    }
+
+    return {error:false, errorMsg:''}
   }
 
   /**
