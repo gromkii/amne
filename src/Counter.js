@@ -18,7 +18,7 @@
       this.numberofSubranges = numberofSubranges;
       this.priceRange = priceRange;
     } else {
-      console.log(this.parseData().error);
+      console.log(this.parseData().errorMsg);
     }
 
     this.subranges = this.createSubranges();
@@ -59,7 +59,6 @@
       return {
         errorMsg:`Too ${formatData.length < 2 ? 'few' : 'many' } lines provided.`,
         error:true
-
       };
     }
 
@@ -67,7 +66,6 @@
       return {
         errorMsg: `Too ${args.length > 2 ? 'many' : 'few'} arguments provided.`,
         error:true
-
       };
     }
 
@@ -86,6 +84,19 @@
         return {
           errorMsg:"Number of days provided is too large. < 200k",
           error:true
+        }
+      }
+    }
+
+    if (priceRange.length) {
+      var price = priceRange.every(price => {
+        return price < 1000000
+      });
+
+      if (!price) {
+        return {
+          error:true,
+          errorMsg: "House Prices should be < 1000000."
         }
       }
     }
