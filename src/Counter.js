@@ -7,18 +7,20 @@
     this.input = input;
     this.inputData = fs.readFileSync(input, 'utf8').toString();
     this.valid = this.checkInputPath(this.input, this.inputData);
-    this.errorMessage = null;
+    this.days;
+    this.numberofSubranges;
+    this.priceRange;
 
     // Abstract from parseData.
-    var {
-      days,
-      numberofSubranges,
-      priceRange
-    } = this.parseData();
+    if (!this.parseData().error) {
+      var { days, numberofSubranges, priceRange } = this.parseData();
+      this.days = days;
+      this.numberofSubranges = numberofSubranges;
+      this.priceRange = priceRange;
+    } else {
+      console.log(this.parseData().error);
+    }
 
-    this.days = days;
-    this.numberofSubranges = numberofSubranges;
-    this.priceRange = priceRange;
     this.subranges = this.createSubranges();
     this.results = this.getCount();
   }
@@ -41,8 +43,8 @@
   }
 
   /**
-   * parseData from inputData
-   * @return {Object}      An object containing parsed input data if valid.
+   * parseData from inputData, check for erroneous data format.
+   * @return {Object}      An object containing parsed input data if valid, or err.
    */
   Counter.prototype.parseData = function() {
     var formatData         = this.inputData.split('\n');
@@ -54,19 +56,46 @@
 
     // Check for data formatting.;
     if ((formatData.length >= 3 && formatData[2] !== '') || formatData.length < 2) {
-      this.errorMessage = `Too ${formatData.length < 2 ? 'few' : 'many' } lines provided.`;
-      return -1;
+      return {
+        errorMsg:`Too ${formatData.length < 2 ? 'few' : 'many' } lines provided.`,
+        error:true
+
+      };
     }
 
     if (args.length > 2 || args.length < 2) {
-      this.errorMessage = `Too ${args.length > 2 ? 'many' : 'few'} arguments provided.`;
-      return -1;
+      return {
+        errorMsg: `Too ${args.length > 2 ? 'many' : 'few'} arguments provided.`,
+        error:true
+
+      };
+    }
+
+    if (args.length == 2) {
+      if (args[0] < args[1]) {
+        return {
+          errorMsg:"Number of windows cannot exceed number of days. 1 < K < N" ,
+          error:true
+        }
+      } else if (args[1] < 1) {
+        return {
+          errorMsg:"Need at least one window.",
+          error:true
+        }
+      } else if (args[0] > 200000) {
+        return {
+          errorMsg:"Number of days provided is too large. < 200k",
+          error:true
+        }
+      }
     }
 
     return {
-      days: days ? days : null,
-      numberofSubranges: numberofSubranges ? numberofSubranges : null,
-      priceRange: priceRange ? priceRange : null
+      error:false,
+      errorMsg:'',
+      days,
+      numberofSubranges,
+      priceRange,
     }
   }
 

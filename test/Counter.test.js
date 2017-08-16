@@ -15,7 +15,7 @@
         expect(tempCount.valid).to.eq(true);
       });
       it('should return valid data array', () => {
-        expect(tempCount.parseData()).to.not.eq(-1);
+        expect(tempCount.parseData().error).to.eq(false);
       });
       it('should return an array of 3 subranges', () => {
         var parsed = tempCount.parseData();
@@ -43,10 +43,10 @@
         expect(tempCount.valid).to.eq(true);
       });
       it('should return invalid arguments', () => {
-        expect(tempCount.parseData()).to.eq(-1);
+        expect(tempCount.parseData().error).to.eq(true);
       });
       it('should return error message, too many arguments', () => {
-        expect(tempCount.errorMessage).to.eq('Too many arguments provided.');
+        expect(tempCount.parseData().errorMsg).to.eq('Too many arguments provided.');
       })
     });
 
@@ -59,10 +59,10 @@
         expect(tempCount.valid).to.eq(true);
       });
       it('should return invalid arguments', () => {
-        expect(tempCount.parseData()).to.eq(-1);
+        expect(tempCount.parseData().error).to.eq(true);
       })
       it('should return error message, too many lines.', () => {
-        expect(tempCount.errorMessage).to.eq('Too many lines provided.')
+        expect(tempCount.parseData().errorMsg).to.eq('Too many lines provided.')
       })
 
     })
