@@ -97,7 +97,7 @@
     // Check to see that price data is valid.
     if (priceRange.length) {
       var price = priceRange.every(price => {
-        return price < 1000000 && !isNaN(price) && price !== '';
+        return price < 1000000 && !isNaN(price) && price;
       });
 
       if (!price) {
