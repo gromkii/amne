@@ -73,13 +73,13 @@
     // Check to see that price data is valid.
     if (priceRange.length) {
       var price = priceRange.every(price => {
-        return price < 1000000 && !isNaN(price) && price;
+        return price < 1000000 && !isNaN(price) && price && price > 0;
       });
 
       if (!price) {
         return {
           error:true,
-          errorMsg: "Invalid house price data. Must be a value < 1000000."
+          errorMsg: "Invalid house price data. Must be a value 0 < n < 1000000."
         }
       }
     }
